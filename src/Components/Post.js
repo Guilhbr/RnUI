@@ -1,30 +1,24 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
+import User from './User';
 
 export default class Post extends Component {
   constructor(props) {
     super(props);
-    this.state = {post: {}, comments: []};
+    this.state = {post: {}, comments: [], loading: true};
   }
 
-  getPost(id) {
+  getPostAndComments(id) {
     try {
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then(response => response.json())
         .then(json => {
-          this.setState({post: json});
+          this.setState({post: json, loading: false});
         });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  getComments(id) {
-    try {
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}/comments`)
         .then(response => response.json())
-        .then(json => {
-          this.setState({comments: json});
+        .then(comments => {
+          this.setState({comments});
         });
     } catch (e) {
       console.log(e);
@@ -32,22 +26,25 @@ export default class Post extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.id || 1;
-    this.getPost(id);
-    this.getComments(id);
+    const {id} = this.props.route.params;
+    this.getPostAndComments(id);
   }
 
   render() {
-    const {post, comments} = this.state;
+    const {post, comments, loading} = this.state;
+    const {navigation} = this.props;
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        {post && (
-          <View>
-            <Text>{post.title}</Text>
+      <ScrollView>
+        {post && !loading ? (
+          <View style={{marginBottom: 10}}>
+            <Text>{post.title} By</Text>
+            <User id={post.userId} navigation={navigation} />
             <Text>{post.body}</Text>
           </View>
+        ) : (
+          <View />
         )}
-        {comments ? (
+        {comments && !loading ? (
           comments.map((comment, k) => {
             return (
               <View key={k}>
@@ -60,7 +57,7 @@ export default class Post extends Component {
         ) : (
           <Text>No Post</Text>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

@@ -1,20 +1,25 @@
 import React, {Component} from 'react';
-import {Text, View, Button} from 'react-native';
+import {ScrollView, Text, View, Button} from 'react-native';
+import User from './User';
 import {getPosts} from '../Middleware/fetch';
 import _ from 'lodash';
 
 export default class Posts extends Component {
   constructor(props) {
     super(props);
-    this.state = {posts: []};
+    this.state = {
+      posts: [],
+      loading: true,
+    };
   }
 
-  getPosts() {
+  getPosts(id) {
     try {
-      fetch('https://jsonplaceholder.typicode.com/posts')
+      const url = id ? `?userId=${id}` : '';
+      fetch(`https://jsonplaceholder.typicode.com/posts${url}`)
         .then(response => response.json())
         .then(json => {
-          this.setState({posts: _.uniqBy(json, 'id')});
+          this.setState({posts: _.uniqBy(json, 'id'), loading: false});
         });
     } catch (e) {
       console.log(e);
@@ -22,24 +27,31 @@ export default class Posts extends Component {
   }
 
   componentDidMount() {
-    this.getPosts();
+    const id = this.props.id;
+    this.getPosts(id);
   }
 
   render() {
-    const {posts} = this.state;
-    const titles = posts && _.map(posts, post => post.title);
+    const {posts, loading} = this.state;
+    const {navigation} = this.props;
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Button
-          title="Home"
-          onPress={() => this.props.navigation.navigate('Home')}
-        />
-        {titles ? (
-          titles.map((title, k) => <Text key={k}>{title}</Text>)
+      <ScrollView>
+        {posts && !loading ? (
+          posts.map((post, k) => (
+            <View
+              key={k}
+              style={{flex: 1, marginBottom: 10, justifyContent: 'space-between', flexDirection: 'row'}}>
+              <User id={post.userId} navigation={navigation} />
+              <Button
+                title={post.title}
+                onPress={() => navigation.navigate('Post', {id: post.id})}
+              />
+            </View>
+          ))
         ) : (
           <Text>No Posts Found</Text>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

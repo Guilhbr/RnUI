@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Image} from 'react-native';
+import {ScrollView, Text, View, Image} from 'react-native';
 
 export default class Photos extends Component {
   constructor(props) {
@@ -7,9 +7,9 @@ export default class Photos extends Component {
     this.state = {photos: []};
   }
 
-  getPhotos(albumId) {
+  getPhotos(id) {
     try {
-      const url = parseInt(albumId, 10) ? `?albumId=${albumId}` : '';
+      const url = id ? `?albumId=${id}` : '';
       fetch(`https://jsonplaceholder.typicode.com/photos${url}`)
         .then(response => response.json())
         .then(json => {
@@ -21,14 +21,14 @@ export default class Photos extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.id || 1;
+    const {id} = this.props.route.params;
     this.getPhotos(id);
   }
 
   render() {
     const {photos} = this.state;
     return (
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <ScrollView>
         <Text>Photos</Text>
         {photos ? (
           photos.map((photo, k) => {
@@ -45,7 +45,7 @@ export default class Photos extends Component {
         ) : (
           <Text>No Photos</Text>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

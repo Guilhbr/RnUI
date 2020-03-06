@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView, Text, View, Button} from 'react-native';
 
 export default class Albums extends Component {
   constructor(props) {
@@ -21,27 +21,34 @@ export default class Albums extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.id || 1;
+    const id = this.props.id;
     this.getAlbums(id);
   }
 
   render() {
     const {albums} = this.state;
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ScrollView>
         <Text>Albums</Text>
         {albums ? (
           albums.map((album, k) => {
             return (
-              <View key={k}>
-                <Text>{album.title}</Text>
+              <View key={k} style={{marginBottom: 10}}>
+                <Button
+                  title={album.title}
+                  onPress={() =>
+                    this.props.navigation.navigate('Photos', {
+                      id: album.id,
+                    })
+                  }
+                />
               </View>
             );
           })
         ) : (
           <Text>No Albums</Text>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

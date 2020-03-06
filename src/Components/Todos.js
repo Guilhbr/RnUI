@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Button} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 
 export default class Todos extends Component {
   constructor(props) {
@@ -28,8 +28,8 @@ export default class Todos extends Component {
   render() {
     const {todos} = this.state;
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Todos</Text>
+      <ScrollView>
+        <Text style={{alignSelf:'center'}}>Todos</Text>
         {todos ? (
           todos.map((todo, k) => {
             return (
@@ -43,7 +43,7 @@ export default class Todos extends Component {
         ) : (
           <Text>No Todos</Text>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

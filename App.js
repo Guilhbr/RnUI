@@ -10,7 +10,6 @@ import 'react-native-gesture-handler';
 import React, {Component} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Home from './src/Components/Home';
 import Profile from './src/Components/Profile';
 import Posts from './src/Components/Posts';
 import Albums from './src/Components/Albums';
@@ -26,19 +25,14 @@ class App extends Component {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="Home"
-            component={Home}
+            name="Posts"
+            component={Posts}
             options={{title: 'Home'}}
           />
           <Stack.Screen
             name="Profile"
             component={Profile}
             options={{title: 'Profile'}}
-          />
-          <Stack.Screen
-            name="Posts"
-            component={Posts}
-            options={{title: 'Posts'}}
           />
           <Stack.Screen
             name="Albums"

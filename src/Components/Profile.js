@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {Text, View, Button} from 'react-native';
+import Overview from './Overview';
+import Todos from './Todos';
+import Albums from './Albums';
+import Posts from './Posts';
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: {}};
+    this.state = {user: {}, currTab: 0};
   }
 
   getUser(userId) {
@@ -20,49 +24,40 @@ export default class Profile extends Component {
     }
   }
 
+  renderTab() {
+    const {user, currTab} = this.state;
+    switch (currTab) {
+      case 0:
+        return <Overview user={user} />;
+      case 1:
+        return <Posts id={user.id} navigation={this.props.navigation} />;
+      case 2:
+        return <Todos id={user.id} />;
+      case 3:
+        return <Albums id={user.id} navigation={this.props.navigation} />;
+    }
+  }
+
   componentDidMount() {
-    const id = this.props.id || 1;
+    const {id} = this.props.route.params;
     this.getUser(id);
   }
 
   render() {
     const {user} = this.state;
-    const address = user.address;
-    const company = user.company;
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Button
-          title="Home"
-          onPress={() => this.props.navigation.navigate('Home')}
-        />
         <Text>{user.username}</Text>
-        <View>
-          <Text>Personal Info</Text>
-          <Text>{user.name}</Text>
-          <Text>{user.email}</Text>
-          <Text>{user.phone}</Text>
-          <Text>{user.website}</Text>
+        <View style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
+          <Button
+            title="Overview"
+            onPress={() => this.setState({currTab: 0})}
+          />
+          <Button title="Posts" onPress={() => this.setState({currTab: 1})} />
+          <Button title="Todos" onPress={() => this.setState({currTab: 2})} />
+          <Button title="Albums" onPress={() => this.setState({currTab: 3})} />
         </View>
-        {address && (
-          <View>
-            <Text>Address</Text>
-            <Text>{address.city}</Text>
-            <Text>{address.street}</Text>
-            <Text>{address.suite}</Text>
-            <Text>{address.zipcode}</Text>
-            <Text>
-              Long: {address.geo.lng}; Lat: {address.geo.lat}
-            </Text>
-          </View>
-        )}
-        {company && (
-          <View>
-            <Text>Company</Text>
-            <Text>{company.name}</Text>
-            <Text>{company.catchPhrase}</Text>
-            <Text>{company.bs}</Text>
-          </View>
-        )}
+        {this.renderTab()}
       </View>
     );
   }
