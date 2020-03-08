@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Button} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 
 export default class User extends Component {
   constructor(props) {
@@ -29,14 +29,13 @@ export default class User extends Component {
     const {user} = this.state;
     const username = user.username || '';
     return (
-      <View>
-        <Button
-          title={username}
-          onPress={() =>
-            this.props.navigation.push('Profile', {id: this.props.id})
-          }
-        />
-      </View>
+      <TouchableOpacity
+        style={{margin: 5}}
+        onPress={() =>
+          this.props.navigation.push('Profile', {id: this.props.id})
+        }>
+        <Text>By {username}</Text>
+      </TouchableOpacity>
     );
   }
 }

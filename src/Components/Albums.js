@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, View, Button} from 'react-native';
+import {ScrollView, Text, View, Button, TouchableOpacity} from 'react-native';
+import styles from '../Styles';
 
 export default class Albums extends Component {
   constructor(props) {
@@ -28,26 +29,28 @@ export default class Albums extends Component {
   render() {
     const {albums} = this.state;
     return (
-      <ScrollView>
-        <Text>Albums</Text>
-        {albums ? (
-          albums.map((album, k) => {
-            return (
-              <View key={k} style={{marginBottom: 10}}>
-                <Button
-                  title={album.title}
+      <ScrollView style={{flex: 1}}>
+        <Text style={styles.sectionTitle}>Albums</Text>
+        <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
+          {albums ? (
+            albums.map((album, k) => {
+              return (
+                <TouchableOpacity
+                  key={k}
+                  style={styles.albums}
                   onPress={() =>
                     this.props.navigation.navigate('Photos', {
                       id: album.id,
                     })
-                  }
-                />
-              </View>
-            );
-          })
-        ) : (
-          <Text>No Albums</Text>
-        )}
+                  }>
+                  <Text style={styles.tabTitle}>{album.title}</Text>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <Text>No Albums</Text>
+          )}
+        </View>
       </ScrollView>
     );
   }

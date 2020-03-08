@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, View, Button} from 'react-native';
+import {ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import User from './User';
-import {getPosts} from '../Middleware/fetch';
+import styles from '../Styles';
 import _ from 'lodash';
 
 export default class Posts extends Component {
@@ -38,15 +38,14 @@ export default class Posts extends Component {
       <ScrollView>
         {posts && !loading ? (
           posts.map((post, k) => (
-            <View
+            <TouchableOpacity
               key={k}
-              style={{flex: 1, marginBottom: 10, justifyContent: 'space-between', flexDirection: 'row'}}>
-              <User id={post.userId} navigation={navigation} />
-              <Button
-                title={post.title}
-                onPress={() => navigation.navigate('Post', {id: post.id})}
-              />
-            </View>
+              onPress={() => navigation.navigate('Post', {id: post.id})}>
+              <View style={styles.postsContainer}>
+                <Text style={styles.title}>{post.title}</Text>
+                <User id={post.userId} navigation={navigation} />
+              </View>
+            </TouchableOpacity>
           ))
         ) : (
           <Text>No Posts Found</Text>

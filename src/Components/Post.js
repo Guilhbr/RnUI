@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
+import styles from '../Styles';
 import User from './User';
+import { FlatList } from 'react-native-gesture-handler';
 
 export default class Post extends Component {
   constructor(props) {
@@ -34,30 +36,34 @@ export default class Post extends Component {
     const {post, comments, loading} = this.state;
     const {navigation} = this.props;
     return (
-      <ScrollView>
+      <View style={{flex: 1, paddingHorizontal: 10, paddingTop: 10}}>
         {post && !loading ? (
-          <View style={{marginBottom: 10}}>
-            <Text>{post.title} By</Text>
-            <User id={post.userId} navigation={navigation} />
+          <View style={{marginBottom: 20}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}}>
+              <Text style={styles.postTitle}>{post.title}</Text>
+              <User id={post.userId} navigation={navigation} />
+            </View>
             <Text>{post.body}</Text>
           </View>
         ) : (
           <View />
         )}
-        {comments && !loading ? (
-          comments.map((comment, k) => {
+        <FlatList
+          style={{flex:1, paddingHorizontal: 10, marginBottom: 10}}
+          data={comments}
+          renderItem={({item}) => {
             return (
-              <View key={k}>
-                <Text>{comment.name}</Text>
-                <Text>{comment.email}</Text>
-                <Text>{comment.body}</Text>
+              <View>
+                <Text>{item.name}</Text>
+                <Text>{item.email}</Text>
+                <Text>{item.body}</Text>
               </View>
             );
-          })
-        ) : (
-          <Text>No Post</Text>
-        )}
-      </ScrollView>
+          }}
+          ListEmptyComponent={() => <Text>No Post</Text>}
+        />
+      </View>
     );
   }
 }

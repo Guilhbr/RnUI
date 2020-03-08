@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Text, View, Button} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import Overview from './Overview';
 import Todos from './Todos';
 import Albums from './Albums';
 import Posts from './Posts';
+import styles from '../Styles';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -44,20 +45,30 @@ export default class Profile extends Component {
   }
 
   render() {
-    const {user} = this.state;
+    const {user, currTab} = this.state;
+    const tabs = ['Overview', 'Posts', 'Todos', 'Albums'];
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>{user.username}</Text>
-        <View style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
-          <Button
-            title="Overview"
-            onPress={() => this.setState({currTab: 0})}
-          />
-          <Button title="Posts" onPress={() => this.setState({currTab: 1})} />
-          <Button title="Todos" onPress={() => this.setState({currTab: 2})} />
-          <Button title="Albums" onPress={() => this.setState({currTab: 3})} />
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <Text style={styles.pageTitle}>{user.username}'s Profile</Text>
+        <View style={styles.tabContainer}>
+          {tabs.map((tab, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[styles.tabs, currTab === index && styles.activeTab]}
+                onPress={() => this.setState({currTab: index})}>
+                <Text
+                  style={[
+                    styles.tabTitle,
+                    currTab === index && styles.activeTitle,
+                  ]}>
+                  {tab}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
-        {this.renderTab()}
+        <View style={{flex: 1, marginTop: 10}}>{this.renderTab()}</View>
       </View>
     );
   }

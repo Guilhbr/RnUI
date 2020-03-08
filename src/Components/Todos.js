@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
+import styles from '../Styles';
 
 export default class Todos extends Component {
   constructor(props) {
@@ -28,8 +29,8 @@ export default class Todos extends Component {
   render() {
     const {todos} = this.state;
     return (
-      <ScrollView>
-        <Text style={{alignSelf:'center'}}>Todos</Text>
+      <ScrollView style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Todos</Text>
         {todos ? (
           todos.map((todo, k) => {
             return (

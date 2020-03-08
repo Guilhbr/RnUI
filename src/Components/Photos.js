@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View, Image} from 'react-native';
+import styles from '../Styles';
 
 export default class Photos extends Component {
   constructor(props) {
@@ -28,23 +29,21 @@ export default class Photos extends Component {
   render() {
     const {photos} = this.state;
     return (
-      <ScrollView>
-        <Text>Photos</Text>
-        {photos ? (
-          photos.map((photo, k) => {
-            return (
-              <View key={k}>
-                <Image
-                  style={{width: 100, height: 100}}
-                  source={{uri: photo.thumbnailUrl}}
-                />
-                <Text>{photo.title}</Text>
-              </View>
-            );
-          })
-        ) : (
-          <Text>No Photos</Text>
-        )}
+      <ScrollView style={{flex: 1}}>
+        <View style={styles.albumContainer}>
+          {photos ? (
+            photos.map((photo, k) => {
+              return (
+                <View key={k} style={styles.photo}>
+                  <Image style={{flex: 1}} source={{uri: photo.thumbnailUrl}} />
+                  {/* <Text>{photo.title}</Text> */}
+                </View>
+              );
+            })
+          ) : (
+            <Text>No Photos</Text>
+          )}
+        </View>
       </ScrollView>
     );
   }
