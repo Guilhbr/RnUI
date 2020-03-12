@@ -1,33 +1,17 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import styles from '../Styles';
+import {connect} from 'react-redux';
+import {getTodos} from '../Redux/api/fetch';
 
-export default class Todos extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {todos: []};
-  }
-
-  getTodos(userId) {
-    try {
-      const url = parseInt(userId, 10) ? `?userId=${userId}` : '';
-      fetch(`https://jsonplaceholder.typicode.com/todos${url}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({todos: json});
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
+class Todos extends Component {
   componentDidMount() {
-    const id = this.props.id || 1;
-    this.getTodos(id);
+    const id = this.props.id;
+    this.props.dispatch(getTodos(id));
   }
 
   render() {
-    const {todos} = this.state;
+    const {todos} = this.props;
     return (
       <ScrollView style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Todos</Text>
@@ -48,3 +32,11 @@ export default class Todos extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  todos: state.user.todos,
+  loading: state.user.tabLoading,
+  error: state.user.error,
+});
+
+export default connect(mapStateToProps)(Todos);

@@ -1,41 +1,39 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
+import {connect} from 'react-redux';
+import {getUser} from '../Redux/api/fetch';
 
-export default class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {user: {}};
+class User extends Component {
+  componentDidMount() {
+    const id = this.props.id;
+    this.props.dispatch(getUser(id));
   }
 
-  getUser(userId) {
-    try {
-      const url = parseInt(userId, 10) ? `?id=${userId}` : '';
-      fetch(`https://jsonplaceholder.typicode.com/users${url}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({user: json[0]});
-        });
-    } catch (e) {
-      console.log(e);
+  componentDidUpdate(nextProps) {
+    if (this.props.user.username !== nextProps.user.username) {
     }
   }
 
-  componentDidMount() {
-    const id = this.props.id;
-    this.getUser(id);
-  }
-
   render() {
-    const {user} = this.state;
-    const username = user.username || '';
+    const {user, loading} = this.props;
+    const username = (user && user.username) || '';
+    if (loading) {
+      <></>;
+    }
     return (
       <TouchableOpacity
         style={{margin: 5}}
-        onPress={() =>
-          this.props.navigation.push('Profile', {id: this.props.id})
-        }>
+        onPress={() => this.props.navigation.push('Profile', {user})}>
         <Text>By {username}</Text>
       </TouchableOpacity>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user.user,
+  loading: state.user.loading,
+  error: state.user.error,
+});
+
+export default connect(mapStateToProps)(User);

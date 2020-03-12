@@ -1,33 +1,17 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, View, Button, TouchableOpacity} from 'react-native';
+import {ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import styles from '../Styles';
+import {connect} from 'react-redux';
+import {getAlbums} from '../Redux/api/fetch';
 
-export default class Albums extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {albums: []};
-  }
-
-  getAlbums(userId) {
-    try {
-      const url = parseInt(userId, 10) ? `?userId=${userId}` : '';
-      fetch(`https://jsonplaceholder.typicode.com/albums${url}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({albums: json});
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
+class Albums extends Component {
   componentDidMount() {
     const id = this.props.id;
-    this.getAlbums(id);
+    this.props.dispatch(getAlbums(id));
   }
 
   render() {
-    const {albums} = this.state;
+    const {albums} = this.props;
     return (
       <ScrollView style={{flex: 1}}>
         <Text style={styles.sectionTitle}>Albums</Text>
@@ -55,3 +39,11 @@ export default class Albums extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  albums: state.user.albums,
+  loading: state.user.tabLoading,
+  error: state.user.error,
+});
+
+export default connect(mapStateToProps)(Albums);

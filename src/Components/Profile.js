@@ -9,24 +9,12 @@ import styles from '../Styles';
 export default class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: {}, currTab: 0};
-  }
-
-  getUser(userId) {
-    try {
-      const url = parseInt(userId, 10) ? `?id=${userId}` : '';
-      fetch(`https://jsonplaceholder.typicode.com/users${url}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({user: json[0]});
-        });
-    } catch (e) {
-      console.log(e);
-    }
+    this.state = {currTab: 0};
   }
 
   renderTab() {
-    const {user, currTab} = this.state;
+    const {currTab} = this.state;
+    const {user} = this.props.route.params;
     switch (currTab) {
       case 0:
         return <Overview user={user} />;
@@ -39,13 +27,10 @@ export default class Profile extends Component {
     }
   }
 
-  componentDidMount() {
-    const {id} = this.props.route.params;
-    this.getUser(id);
-  }
-
   render() {
-    const {user, currTab} = this.state;
+    const {currTab} = this.state;
+    const {user} = this.props.route.params;
+
     const tabs = ['Overview', 'Posts', 'Todos', 'Albums'];
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>

@@ -1,49 +1,32 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View, TouchableOpacity} from 'react-native';
-import User from './User';
+import {connect} from 'react-redux';
+import {getPosts} from '../Redux/api/fetch';
 import styles from '../Styles';
 import _ from 'lodash';
 
-export default class Posts extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posts: [],
-      loading: true,
-    };
-  }
-
-  getPosts(id) {
-    try {
-      const url = id ? `?userId=${id}` : '';
-      fetch(`https://jsonplaceholder.typicode.com/posts${url}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({posts: _.uniqBy(json, 'id'), loading: false});
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
+class Posts extends Component {
   componentDidMount() {
     const id = this.props.id;
-    this.getPosts(id);
+    this.props.dispatch(getPosts(id));
   }
 
   render() {
-    const {posts, loading} = this.state;
-    const {navigation} = this.props;
+    const {id, navigation} = this.props;
+    const posts = id ? this.props.userPosts : this.props.posts;
+    const loading = id ? this.props.tabLoading : this.props.loading;
+    if (loading) {
+      return <Text> LOADING ... </Text>;
+    }
     return (
       <ScrollView>
         {posts && !loading ? (
           posts.map((post, k) => (
             <TouchableOpacity
               key={k}
-              onPress={() => navigation.navigate('Post', {id: post.id})}>
+              onPress={() => navigation.navigate('Post', {id: post.id, post})}>
               <View style={styles.postsContainer}>
                 <Text style={styles.title}>{post.title}</Text>
-                <User id={post.userId} navigation={navigation} />
               </View>
             </TouchableOpacity>
           ))
@@ -54,3 +37,14 @@ export default class Posts extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  posts: state.posts.posts,
+  loading: state.posts.loading,
+  error: state.posts.error,
+  userPosts: state.user.posts,
+  tabLoading: state.user.tabLoading,
+  userError: state.user.error,
+});
+
+export default connect(mapStateToProps)(Posts);
