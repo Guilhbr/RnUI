@@ -84,7 +84,7 @@ export default function(state = initialState, action) {
       const uniqAlbums = _.uniqBy(albums, 'id');
       return {
         ...state,
-        loading: false,
+        tabLoading: false,
         albums: uniqAlbums,
       };
     }

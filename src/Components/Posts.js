@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableOpacity, FlatList} from 'react-native';
 import {connect} from 'react-redux';
 import {getPosts} from '../Redux/api/fetch';
 import styles from '../Styles';
+import postStyles from '../Styles/posts';
 import _ from 'lodash';
+import Loading from './Loading';
 
 class Posts extends Component {
   componentDidMount() {
@@ -16,24 +18,27 @@ class Posts extends Component {
     const posts = id ? this.props.userPosts : this.props.posts;
     const loading = id ? this.props.tabLoading : this.props.loading;
     if (loading) {
-      return <Text> LOADING ... </Text>;
+      return <Loading />;
     }
     return (
-      <ScrollView>
-        {posts && !loading ? (
-          posts.map((post, k) => (
+      <FlatList
+        style={styles.container}
+        data={posts}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({item}) => {
+          return (
             <TouchableOpacity
-              key={k}
-              onPress={() => navigation.navigate('Post', {id: post.id, post})}>
-              <View style={styles.postsContainer}>
-                <Text style={styles.title}>{post.title}</Text>
+              onPress={() => navigation.navigate('Post', {post: item})}>
+              <View style={postStyles.postButton}>
+                <Text style={postStyles.listTitle}>{item.title}</Text>
               </View>
             </TouchableOpacity>
-          ))
-        ) : (
-          <Text>No Posts Found</Text>
-        )}
-      </ScrollView>
+          );
+        }}
+        ListEmptyComponent={() => {
+          return <Text style={styles.noDataText}>No Posts Found</Text>;
+        }}
+      />
     );
   }
 }

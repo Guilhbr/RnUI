@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View, TouchableOpacity} from 'react-native';
-import styles from '../Styles';
+import userStyles from '../Styles/user';
+import styles from '../Styles/';
 import {connect} from 'react-redux';
 import {getAlbums} from '../Redux/api/fetch';
+import Loading from './Loading';
 
 class Albums extends Component {
   componentDidMount() {
@@ -11,28 +13,31 @@ class Albums extends Component {
   }
 
   render() {
-    const {albums} = this.props;
+    const {albums, loading} = this.props;
+    if (loading) {
+      return <Loading />;
+    }
     return (
-      <ScrollView style={{flex: 1}}>
-        <Text style={styles.sectionTitle}>Albums</Text>
-        <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
+      <ScrollView style={userStyles.sectionContainer}>
+        <Text style={userStyles.sectionTitle}>Albums</Text>
+        <View style={userStyles.albumContainer}>
           {albums ? (
             albums.map((album, k) => {
               return (
                 <TouchableOpacity
                   key={k}
-                  style={styles.albums}
+                  style={userStyles.albums}
                   onPress={() =>
                     this.props.navigation.navigate('Photos', {
                       id: album.id,
                     })
                   }>
-                  <Text style={styles.tabTitle}>{album.title}</Text>
+                  <Text style={userStyles.albumTitle}>{album.title}</Text>
                 </TouchableOpacity>
               );
             })
           ) : (
-            <Text>No Albums</Text>
+            <Text style={styles.noDataText}>No Albums</Text>
           )}
         </View>
       </ScrollView>

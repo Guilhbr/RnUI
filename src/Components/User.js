@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {getUser} from '../Redux/api/fetch';
+import userStyles from '../Styles/user';
 
 class User extends Component {
   componentDidMount() {
@@ -17,14 +18,14 @@ class User extends Component {
   render() {
     const {user, loading} = this.props;
     const username = (user && user.username) || '';
-    if (loading) {
-      <></>;
+    if (loading || !username) {
+      return <></>;
     }
     return (
       <TouchableOpacity
-        style={{margin: 5}}
-        onPress={() => this.props.navigation.push('Profile', {user})}>
-        <Text>By {username}</Text>
+        style={userStyles.userButton}
+        onPress={() => this.props.navigation.navigate('Profile', {user})}>
+        <Text style={userStyles.userButtonText}>By {username}</Text>
       </TouchableOpacity>
     );
   }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, FlatList} from 'react-native';
 import styles from '../Styles';
+import postStyles from '../Styles/posts';
 import User from './User';
 import {connect} from 'react-redux';
 import {getComments} from '../Redux/api/fetch';
@@ -21,27 +22,23 @@ class Post extends Component {
     const {comments, loading, navigation} = this.props;
     const {post} = this.props.route.params;
     return (
-      <View style={{flex: 1, paddingHorizontal: 10, paddingTop: 10}}>
+      <View style={postStyles.postViewContainer}>
         {post && (
-          <View style={{marginBottom: 20}}>
-            <View
-              style={{flexDirection: 'column', justifyContent: 'space-between', marginBottom: 15}}>
-              <Text style={styles.postTitle}>{post.title}</Text>
-              <User id={post.userId} navigation={navigation} />
-            </View>
-            <Text>{post.body}</Text>
+          <View style={postStyles.postContainer}>
+            <Text style={postStyles.postTitle}>{post.title}</Text>
+            <User id={post.userId} navigation={navigation} />
+            <Text style={styles.text}>{post.body}</Text>
           </View>
         )}
         <FlatList
-          style={{flex:1, paddingHorizontal: 10, marginBottom: 10}}
+          style={postStyles.commentListContainer}
           data={comments}
+          keyExtractor={item => item.id.toString()}
           renderItem={({item}) => {
             return (
-              <View
-                key={item.id}
-                style={{borderWidth: 1, marginBottom: 10, padding: 10}}>
-                <Text style={{color: 'blue'}}>{item.email}</Text>
-                <Text style={{fontWeight: 'bold'}}>{item.name}</Text>
+              <View style={postStyles.commentContainer}>
+                <Text style={postStyles.commentUser}>{item.email}</Text>
+                <Text style={postStyles.commentTitle}>{item.name}</Text>
                 <Text>{item.body}</Text>
               </View>
             );
@@ -50,7 +47,7 @@ class Post extends Component {
             if (loading) {
               return <Loading />;
             }
-            return <Text>No Comments</Text>;
+            return <Text style={styles.noDataText}>No Comments</Text>;
           }}
         />
       </View>

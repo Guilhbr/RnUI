@@ -5,6 +5,7 @@ import Todos from './Todos';
 import Albums from './Albums';
 import Posts from './Posts';
 import styles from '../Styles';
+import userStyles from '../Styles/user';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -33,19 +34,22 @@ export default class Profile extends Component {
 
     const tabs = ['Overview', 'Posts', 'Todos', 'Albums'];
     return (
-      <View style={{flex: 1, flexDirection: 'column'}}>
-        <Text style={styles.pageTitle}>{user.username}'s Profile</Text>
-        <View style={styles.tabContainer}>
+      <View style={styles.container}>
+        <Text style={userStyles.pageTitle}>{user.username}'s Profile</Text>
+        <View style={userStyles.tabContainer}>
           {tabs.map((tab, index) => {
             return (
               <TouchableOpacity
                 key={index}
-                style={[styles.tabs, currTab === index && styles.activeTab]}
+                style={[
+                  userStyles.tabs,
+                  currTab === index && userStyles.activeTab,
+                ]}
                 onPress={() => this.setState({currTab: index})}>
                 <Text
                   style={[
-                    styles.tabTitle,
-                    currTab === index && styles.activeTitle,
+                    userStyles.tabTitle,
+                    currTab === index && userStyles.activeTitle,
                   ]}>
                   {tab}
                 </Text>
@@ -53,7 +57,7 @@ export default class Profile extends Component {
             );
           })}
         </View>
-        <View style={{flex: 1, marginTop: 10}}>{this.renderTab()}</View>
+        <View style={userStyles.tabViewContainer}>{this.renderTab()}</View>
       </View>
     );
   }
